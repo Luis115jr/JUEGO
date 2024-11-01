@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregunta con Opciones</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #afa7c7;
+            overflow: hidden;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+        .option {
+            margin: 40px;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            transition: transform 0.1s ease, background-color 0.3s;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .option:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+        .message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            transition: opacity 0.5s;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        /* Estilos para los corazones animados */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #FF69B4;
+            opacity: 0;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>¿ERES GAY?</h1>
+    <button class="option" id="option1" style="top: 35%; left: 60%;">NO</button>
+    <button class="option" id="option2" style="top: 35%; left: 30%;">SI</button>
+    <div class="message" id="message"></div>
+</div>
+
+<script>
+    const option1 = document.getElementById('option1');
+    const option2 = document.getElementById('option2');
+    const message = document.getElementById('message');
+
+    // Función para mover la opción "NO" aleatoriamente
+    function moveOption() {
+        const buttonRect = option1.getBoundingClientRect();
+        const containerRect = document.body.getBoundingClientRect();
+        
+        const maxX = containerRect.width - buttonRect.width - 20;
+        const maxY = containerRect.height - buttonRect.height - 20;
+
+        let randomX = Math.random() * maxX;
+        let randomY = Math.random() * maxY;
+
+        option1.style.left = `${randomX}px`;
+        option1.style.top = `${randomY}px`;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        const buttonRect = option1.getBoundingClientRect();
+        const distance = Math.hypot(e.clientX - (buttonRect.left + buttonRect.width / 2), e.clientY - (buttonRect.top + buttonRect.height / 2));
+
+        if (distance < 50) {
+            moveOption();
+        }
+    });
+
+    option2.addEventListener('click', () => {
+        message.innerText = 'YA LO SABIA!!.';
+        message.style.display = 'block';
+        message.style.opacity = 1;
+        option1.style.display = 'none';
+        option2.style.backgroundColor = '#28a745';
+        
+        createHearts(); // Llamada a la función para crear corazones
+    });
+
+    option1.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveOption();
+        message.innerText = 'No puedes elegir NO, intenta con SI.';
+        message.style.display = 'block';
+        message.style.opacity = 1;
+    });
+
+    // Función para crear corazones animados
+    function createHearts() {
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = '❤️';
+            document.body.appendChild(heart);
+
+            // Posición y tamaño aleatoria
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.top = `${Math.random() * 100}vh`;
+            heart.style.fontSize = `${Math.random() * 80 + 80}px`;
+
+            // Animación de aparición y subida
+            heart.style.opacity = 2;
+            heart.style.animation = `pulse 1.5s ease-in-out infinite, moveUp 3s ease ${Math.random() * 2}s`;
+
+            // Quitar el corazón después de unos segundos
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+    }
+</script>
+
+</body>
+</html>
